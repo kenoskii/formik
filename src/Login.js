@@ -1,15 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Formik, Form, Field, FieldArray } from 'formik';
 import * as yup from 'yup';
 import { IndeterminateCheckBoxOutlined } from '@material-ui/icons';
 import { FilledInput, Typography } from '@material-ui/core';
+import InputField from './components';
+import Modal from './components/modal';
 
 const Login = () => {
+    const [visible, setVisible] = useState(true);
 
     const validationSchema = () => {
         return (
             yup.object({
-                userName: yup.string().required("required"),
+                userName: yup.string().required("User name is required"),
                 password: yup.string().max(8, "password must be 8 characters and above").required("required"),
                 phoneNumber: yup.number().positive().integer().min(10, 'enter number up to 10').required("enter phone number"),
                 email: yup.string().email().required("enter valid email"),
@@ -23,8 +26,8 @@ const Login = () => {
         resetForm();
     }
 
-
     return (
+        <>
         <Formik
             initialValues={{
                 userName: "",
@@ -47,20 +50,24 @@ const Login = () => {
             }) => {
                 return (
                     <Form>
-                        <Field
+                        {/* <Field
                             type="text"
                             name="userName"
                             values={values.userName}
                             onChange={handleChange}
                         />
-                        {errors.userName && touched.userName ? <p>{errors.userName}</p> : ""}
-                        <Field
+                        {errors.userName && touched.userName ? <p style={{
+                            color: 'red'
+                        }} >{errors.userName}</p> : ""} */}
+
+                        <InputField
                             type="text"
                             name="password"
-                            values={values.password}
+                            value={values.password}
                             onChange={handleChange}
+                            error={touched.password && errors.password}
                         />
-                        {errors.password && touched.password ? <p>{errors.password}</p> : ""}
+                   
                         <Field
                             type="number"
                             name="phoneNumber"
@@ -125,7 +132,10 @@ const Login = () => {
                         </FieldArray>
                         <button
                             type='button'
-                            onClick={handleSubmit}
+                            // onClick={handleSubmit}
+                            onClick={() => {
+                                setVisible(true)
+                            }}
                         >
                             Submit
                         </button>
@@ -134,6 +144,19 @@ const Login = () => {
             }}
 
         </Formik>
+
+
+        <Modal 
+            visible={visible}
+            onClose={() => {
+                setVisible(false)
+            }}
+        >
+            <div>
+                Hello, You are welcome
+            </div>
+        </Modal>
+     </>
     )
 }
 export default Login;
